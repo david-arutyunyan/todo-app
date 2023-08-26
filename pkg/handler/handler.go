@@ -5,7 +5,7 @@ import "github.com/gin-gonic/gin"
 type Handler struct {
 }
 
-func (h *Handler) InitRoutes() *gin.Engine {
+func (h *Handler) InitRoutes() *gin.Engine { // Инициализатор всех энд-поинтов
 	router := gin.New()
 
 	auth := router.Group("/auth")
