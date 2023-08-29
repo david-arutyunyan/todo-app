@@ -6,6 +6,20 @@ CREATE TABLE users
     password_hash varchar(255) not null
 );
 
+CREATE TABLE segments
+(
+
+    id   serial PRIMARY KEY,
+    name varchar(255) not null
+);
+
+CREATE TABLE users_segments
+(
+    id         serial PRIMARY KEY,
+    user_id    int references users (id) on delete cascade    not null,
+    segment_id int references segments (id) on delete cascade not null
+);
+
 CREATE TABLE todo_lists
 (
     id          serial PRIMARY KEY,
