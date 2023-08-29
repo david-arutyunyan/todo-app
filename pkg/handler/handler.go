@@ -16,7 +16,7 @@ func NewHandler(services *service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine { // Инициализатор всех энд-поинтов
 	router := gin.New()
 
-	auth := router.Group("/auth")
+	auth := router.Group("/users-segmentation")
 	{
 		auth.POST("/sign-up", h.signUp)
 		auth.POST("/sign-in", h.signIn)
