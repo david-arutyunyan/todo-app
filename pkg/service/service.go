@@ -5,26 +5,24 @@ import (
 	"github/todo-app/pkg/repository"
 )
 
-type Authorization interface {
+type User interface {
 	CreateUser(user todo.User) (int, error)
-	GenerateToken(username, password string) (string, error)
-	ParseToken(token string) (int, error)
+	DeleteUser(userId int) error
 }
 
-type TodoList interface {
-}
-
-type TodoItem interface {
+type Segment interface {
+	CreateSegment(segment todo.Segment) (int, error)
+	DeleteSegment(segment todo.Segment) error
 }
 
 type Service struct {
-	Authorization
-	TodoList
-	TodoItem
+	User
+	Segment
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		Authorization: NewAuthService(repo.Authorization),
+		User:    NewUserService(repo.User),
+		Segment: NewSegmentService(repo.Segment),
 	}
 }
