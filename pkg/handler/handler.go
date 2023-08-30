@@ -2,7 +2,11 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 	"github/todo-app/pkg/service"
+
+	_ "github/todo-app/docs"
 )
 
 type Handler struct {
@@ -33,10 +37,12 @@ func (h *Handler) InitRoutes() *gin.Engine { // Инициализатор вс�
 		usersSegments := usersSegService.Group("/users-segments")
 		{
 			usersSegments.POST("/", h.updateUserSegments)
-			usersSegments.GET("/", h.getUserSegments)
+			usersSegments.GET("/:id", h.getUserSegments)
 		}
 
 	}
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return router
 }

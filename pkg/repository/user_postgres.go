@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github/todo-app"
 )
@@ -14,19 +15,19 @@ func NewUserPostgres(db *sqlx.DB) *UserPostgres {
 	return &UserPostgres{db: db}
 }
 
-func (r *UserPostgres) CreateUser(user todo.User) (int, error) {
-	var id int
-	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) values ($1, $2, $3) RETURNING id", usersTable)
+func (r *UserPostgres) CreateUser(user todo.User) (string, error) {
+	var id string
+	query := fmt.Sprintf("INSERT INTO %s (id, name, username, password_hash) VALUES ($1, $2, $3, $4) RETURNING id", usersTable)
 
-	row := r.db.QueryRow(query, user.Name, user.Username, user.Password)
+	row := r.db.QueryRow(query, uuid.New().String(), user.Name, user.Username, user.Password)
 	if err := row.Scan(&id); err != nil {
-		return 0, err
+		return "", err
 	}
 
 	return id, nil
 }
 
-func (r *UserPostgres) DeleteUser(userId int) error {
+func (r *UserPostgres) DeleteUser(userId string) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", usersTable)
 	_, err := r.db.Exec(query, userId)
 

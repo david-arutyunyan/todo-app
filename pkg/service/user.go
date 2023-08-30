@@ -18,7 +18,7 @@ func NewUserService(repo repository.User) *UserService {
 	return &UserService{repo: repo}
 }
 
-func (s *UserService) CreateUser(user todo.User) (int, error) {
+func (s *UserService) CreateUser(user todo.User) (string, error) {
 	//user.Password = generatePasswordHash(user.Password)
 	return s.repo.CreateUser(user)
 }
@@ -30,6 +30,6 @@ func (s *UserService) CreateUser(user todo.User) (int, error) {
 //	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 //}
 
-func (s *UserService) DeleteUser(userId int) error {
+func (s *UserService) DeleteUser(userId string) error {
 	return s.repo.DeleteUser(userId)
 }

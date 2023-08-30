@@ -12,6 +12,13 @@ import (
 	"os"
 )
 
+// @title Todo App API
+// @version 1.0
+// @description API Server for TodoList Application
+
+// @host localhost:8000
+// @BasePath /users-segmentation
+
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 

@@ -6,23 +6,30 @@ import (
 )
 
 type User interface {
-	CreateUser(user todo.User) (int, error)
-	DeleteUser(userId int) error
+	CreateUser(user todo.User) (string, error)
+	DeleteUser(userId string) error
 }
 
 type Segment interface {
-	CreateSegment(segment todo.Segment) (int, error)
+	CreateSegment(segment todo.Segment) (string, error)
 	DeleteSegment(segment todo.Segment) error
+}
+
+type UsersSegments interface {
+	GetUserSegments(userId string) ([]todo.Segment, error)
+	UpdateUserSegments(a todo.A) error
 }
 
 type Repository struct {
 	User
 	Segment
+	UsersSegments
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		User:    NewUserPostgres(db),
-		Segment: NewSegmentPostgres(db),
+		User:          NewUserPostgres(db),
+		Segment:       NewSegmentPostgres(db),
+		UsersSegments: NewUsersSegmentsPostgres(db),
 	}
 }

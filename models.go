@@ -1,19 +1,25 @@
 package todo
 
 type User struct { // Сущность пользователя (поля совпадают с полями в БД)
-	Id       int    `json:"-" db:"id"`
+	Id       string `json:"-" db:"id"`
 	Name     string `json:"name" binding:"required"`
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 type Segment struct {
-	Id   int    `json:"-" db:"id"`
+	Id   string `json:"-" db:"id"`
 	Name string `json:"name" binding:"required"`
 }
 
 type UsersSegments struct {
-	Id        int
-	UserId    int
-	SegmentId int
+	Id        string
+	UserId    string
+	SegmentId string
+}
+
+type A struct {
+	Id     string   `json:"id"`
+	Add    []string `json:"add"`
+	Delete []string `json:"delete"`
 }

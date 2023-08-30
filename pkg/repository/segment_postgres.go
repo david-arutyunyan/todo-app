@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github/todo-app"
 )
@@ -14,13 +15,13 @@ func NewSegmentPostgres(db *sqlx.DB) *SegmentPostgres {
 	return &SegmentPostgres{db: db}
 }
 
-func (r *SegmentPostgres) CreateSegment(segment todo.Segment) (int, error) {
-	var id int
-	query := fmt.Sprintf("INSERT INTO %s (name) values ($1) RETURNING id", segmentsTable)
+func (r *SegmentPostgres) CreateSegment(segment todo.Segment) (string, error) {
+	var id string
+	query := fmt.Sprintf("INSERT INTO %s (id, name) VALUES ($1, $2) RETURNING id", segmentsTable)
 
-	row := r.db.QueryRow(query, segment.Name)
+	row := r.db.QueryRow(query, uuid.New().String(), segment.Name)
 	if err := row.Scan(&id); err != nil {
-		return 0, err
+		return "", err
 	}
 
 	return id, nil

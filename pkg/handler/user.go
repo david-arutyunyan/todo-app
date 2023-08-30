@@ -4,9 +4,20 @@ import (
 	"github.com/gin-gonic/gin"
 	"github/todo-app"
 	"net/http"
-	"strconv"
 )
 
+// @Summary CreateUser
+// @Tags user
+// @Description create a new user
+// @ID create-user
+// @Accept  json
+// @Produce  json
+// @Param input body todo.User true "user info"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /user/createUser [post]
 func (h *Handler) createUser(c *gin.Context) {
 	var input todo.User
 
@@ -26,14 +37,21 @@ func (h *Handler) createUser(c *gin.Context) {
 	})
 }
 
+// @Summary DeleteUser
+// @Tags user
+// @Description delete user by id
+// @ID delete-user
+// @Accept  json
+// @Produce  json
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /user/deleteUser/:id [delete]
 func (h *Handler) deleteUser(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
-		return
-	}
+	id := c.Param("id")
 
-	err = h.services.User.DeleteUser(id)
+	err := h.services.User.DeleteUser(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

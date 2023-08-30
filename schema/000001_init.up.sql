@@ -1,6 +1,6 @@
 CREATE TABLE users
 (
-    id            serial PRIMARY KEY,
+    id            varchar(255) PRIMARY KEY,
     name          varchar(255) not null,
     username      varchar(255) not null unique,
     password_hash varchar(255) not null
@@ -9,13 +9,14 @@ CREATE TABLE users
 CREATE TABLE segments
 (
 
-    id   serial PRIMARY KEY,
+    id   varchar(255) PRIMARY KEY,
     name varchar(255) not null unique
 );
 
 CREATE TABLE users_segments
 (
-    id         serial PRIMARY KEY,
-    user_id    int references users (id) on delete cascade    not null,
-    segment_id int references segments (id) on delete cascade not null
+    id         varchar(255) PRIMARY KEY,
+    user_id    varchar(255) references users (id) on delete cascade    not null,
+    segment_id varchar(255) references segments (id) on delete cascade not null,
+    UNIQUE (user_id, segment_id)
 );
