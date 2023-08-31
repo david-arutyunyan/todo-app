@@ -4,6 +4,7 @@ RUN go version
 ENV GOPATH=/
 
 COPY ./ ./
+COPY init.sql /docker-entrypoint-initdb.d/10-init.sql
 
 RUN apt-get update
 RUN apt-get -y install postgresql-client
