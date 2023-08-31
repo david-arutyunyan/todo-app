@@ -6,12 +6,20 @@ import (
 	"net/http"
 )
 
-type getAllListsResponse struct {
-	Data []todo.Segment `json:"data"`
-}
-
+// @Summary UpdateUserSegments
+// @Tags user_segments
+// @Description update user's segments
+// @ID update-user-segments
+// @Accept  json
+// @Produce  json
+// @Param input body todo.AlteredUserSegments true "user_id and segments to add/delete"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /users-segments [post]
 func (h *Handler) updateUserSegments(c *gin.Context) {
-	var input todo.A
+	var input todo.AlteredUserSegments
 
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid input body")
@@ -24,11 +32,22 @@ func (h *Handler) updateUserSegments(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, getAllListsResponse{
-		Data: nil,
+	c.JSON(http.StatusOK, statusResponse{
+		Status: "ok",
 	})
 }
 
+// @Summary GetUserSegments
+// @Tags user_segments
+// @Description get user's segments
+// @ID get-user-segments
+// @Accept  json
+// @Produce  json
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /users-segments/:id [GET]
 func (h *Handler) getUserSegments(c *gin.Context) {
 	id := c.Param("id")
 

@@ -17,6 +17,6 @@ func (s *UsersSegmentsService) GetUserSegments(userId string) ([]todo.Segment, e
 	return s.repo.GetUserSegments(userId)
 }
 
-func (s *UsersSegmentsService) UpdateUserSegments(a todo.A) error {
+func (s *UsersSegmentsService) UpdateUserSegments(a todo.AlteredUserSegments) error {
 	return s.repo.UpdateUserSegments(a)
 }

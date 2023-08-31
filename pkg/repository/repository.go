@@ -17,7 +17,7 @@ type Segment interface {
 
 type UsersSegments interface {
 	GetUserSegments(userId string) ([]todo.Segment, error)
-	UpdateUserSegments(a todo.A) error
+	UpdateUserSegments(a todo.AlteredUserSegments) error
 }
 
 type Repository struct {

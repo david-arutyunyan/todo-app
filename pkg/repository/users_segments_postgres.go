@@ -27,47 +27,59 @@ func (r *UsersSegmentsPostgres) GetUserSegments(userId string) ([]todo.Segment, 
 	return segments, err
 }
 
-func (r *UsersSegmentsPostgres) UpdateUserSegments(a todo.A) error {
+func (r *UsersSegmentsPostgres) UpdateUserSegments(a todo.AlteredUserSegments) error {
 	var segmentsIdToAdd []string
 	var segmentsIdToDelete []string
 
-	var segmentsNamesToAdd []string
-	var segmentsNamesToDelete []string
-
-	for _, v := range a.Add {
-		segmentsNamesToAdd = append(segmentsNamesToAdd, v.Name)
+	if len(a.Add) != 0 {
+		query, args, err := sqlx.In(fmt.Sprintf("SELECT id FROM %s WHERE name IN (?)", segmentsTable), a.Add)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = r.db.Select(&segmentsIdToAdd, r.db.Rebind(query), args...)
 	}
 
-	for _, v := range a.Delete {
-		segmentsNamesToDelete = append(segmentsNamesToDelete, v.Name)
+	if len(a.Delete) != 0 {
+		query, args, err := sqlx.In(fmt.Sprintf("SELECT id FROM %s WHERE name IN (?)", segmentsTable), a.Delete)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = r.db.Select(&segmentsIdToDelete, r.db.Rebind(query), args...)
 	}
 
-	query, args, err := sqlx.In(fmt.Sprintf("SELECT id FROM %s WHERE name IN (?)", segmentsTable), segmentsNamesToAdd)
-	if err != nil {
-		log.Fatal(err)
+	//tx, err := r.db.Begin()
+	//if err != nil {
+	//	return err
+	//}
+
+	if len(a.Delete) != 0 {
+		query, args, err := sqlx.In(fmt.Sprintf("DELETE FROM %s WHERE user_id='%s' AND segment_id IN (?)", usersSegmentsTable, a.Id), segmentsIdToDelete)
+		_, err = r.db.Exec(r.db.Rebind(query), args...)
+		if err != nil {
+			//tx.Rollback()
+			return err
+		}
 	}
-	err = r.db.Select(&segmentsIdToAdd, r.db.Rebind(query), args...)
 
-	query, args, err = sqlx.In(fmt.Sprintf("SELECT id FROM %s WHERE name IN (?)", segmentsTable), segmentsNamesToDelete)
-	if err != nil {
-		log.Fatal(err)
+	if len(a.Add) != 0 {
+		vals1 := []interface{}{}
+		query := fmt.Sprintf("INSERT INTO %s (id, user_id, segment_id) VALUES", usersSegmentsTable)
+
+		for _, v := range segmentsIdToAdd {
+			query += "(?, ?, ?),"
+			vals1 = append(vals1, uuid.New().String(), a.Id, v)
+		}
+		query = strings.TrimSuffix(query, ",")
+
+		query += " ON CONFLICT (user_id, segment_id) DO NOTHING"
+
+		_, err := r.db.Exec(r.db.Rebind(query), vals1...)
+
+		if err != nil {
+			//tx.Rollback()
+			return err
+		}
 	}
-	err = r.db.Select(&segmentsIdToDelete, r.db.Rebind(query), args...)
 
-	vals1 := []interface{}{}
-	query = fmt.Sprintf("INSERT INTO %s (id, user_id, segment_id) VALUES", usersSegmentsTable)
-
-	for _, v := range segmentsIdToAdd {
-		query += "(?, ?, ?),"
-		vals1 = append(vals1, uuid.New().String(), a.Id, v)
-	}
-	query = strings.TrimSuffix(query, ",")
-
-	_, err = r.db.Exec(r.db.Rebind(query), vals1...)
-
-	query, args, err = sqlx.In(fmt.Sprintf("DELETE FROM %s WHERE user_id=%d AND segment_id IN (?)", usersSegmentsTable, a.Id), segmentsIdToDelete)
-
-	_, err = r.db.Exec(r.db.Rebind(query), args...)
-
-	return err
+	return nil
 }

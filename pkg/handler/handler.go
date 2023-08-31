@@ -39,7 +39,6 @@ func (h *Handler) InitRoutes() *gin.Engine { // Инициализатор вс�
 			usersSegments.POST("/", h.updateUserSegments)
 			usersSegments.GET("/:id", h.getUserSegments)
 		}
-
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

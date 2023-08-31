@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
@@ -10,6 +11,7 @@ import (
 	"github/todo-app/pkg/repository"
 	"github/todo-app/pkg/service"
 	"os"
+	"time"
 )
 
 // @title Todo App API
@@ -36,7 +38,7 @@ func main() {
 		Username: viper.GetString("db.username"),
 		DBName:   viper.GetString("db.dbname"),
 		SSLMode:  viper.GetString("db.sslmode"),
-		Password: os.Getenv("DB_PASSWORD"),
+		Password: os.Getenv("POSTGRES_PASSWORD"),
 	})
 
 	if err != nil {
@@ -46,6 +48,13 @@ func main() {
 	repo := repository.NewRepository(db)
 	services := service.NewService(repo)
 	handlers := handler.NewHandler(services)
+
+	go func() {
+		for {
+			fmt.Println(5)
+			time.Sleep(10 * time.Second)
+		}
+	}()
 
 	srv := new(todo.Server)
 	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {

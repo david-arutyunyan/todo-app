@@ -9,7 +9,7 @@ services:
     depends_on:
       - db
     environment:
-      - DB_PASSWORD=uthwtu
+      - POSTGRES_PASSWORD=uthwtu
 
   db:
     restart: always

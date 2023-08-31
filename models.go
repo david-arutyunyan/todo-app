@@ -18,8 +18,8 @@ type UsersSegments struct {
 	SegmentId string
 }
 
-type A struct {
-	Id     string   `json:"id"`
+type AlteredUserSegments struct {
+	Id     string   `json:"id" binding:"required"`
 	Add    []string `json:"add"`
 	Delete []string `json:"delete"`
 }

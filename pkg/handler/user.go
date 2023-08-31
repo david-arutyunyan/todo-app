@@ -17,7 +17,7 @@ import (
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
-// @Router /user/createUser [post]
+// @Router /user [post]
 func (h *Handler) createUser(c *gin.Context) {
 	var input todo.User
 
@@ -47,7 +47,7 @@ func (h *Handler) createUser(c *gin.Context) {
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
-// @Router /user/deleteUser/:id [delete]
+// @Router /user/:id [delete]
 func (h *Handler) deleteUser(c *gin.Context) {
 	id := c.Param("id")
 
