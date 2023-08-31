@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
@@ -11,7 +10,6 @@ import (
 	"github/todo-app/pkg/repository"
 	"github/todo-app/pkg/service"
 	"os"
-	"time"
 )
 
 // @title Todo App API
@@ -49,12 +47,12 @@ func main() {
 	services := service.NewService(repo)
 	handlers := handler.NewHandler(services)
 
-	go func() {
-		for {
-			fmt.Println(5)
-			time.Sleep(10 * time.Second)
-		}
-	}()
+	//go func() {
+	//	for {
+	//		fmt.Println(5)
+	//		time.Sleep(10 * time.Second)
+	//	}
+	//}()
 
 	srv := new(todo.Server)
 	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
